@@ -14,4 +14,19 @@ export class AppController {
   getsellOrders() {
     return this.appService.getSellOrders();
   }
+
+  @Get('deposits')
+  getDepositsHistory() {
+    return this.appService.getDepositHistory();
+  }
+
+  @Get('withdraws')
+  getWithdrawHistory() {
+    return this.appService.getWithdrawHistory();
+  }
+
+  @Get('transactions')
+  getTransactionHistory() {
+    return this.appService.getTransactionHistory();
+  }
 }

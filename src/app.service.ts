@@ -10,6 +10,9 @@ import { OrderType } from './enums/order-type.enum';
 export class AppService {
   private readonly logger = new Logger(AppService.name);
   private readonly c2cPath = '/sapi/v1/c2c/orderMatch/listUserOrderHistory';
+  private readonly deposityHistoryPath = '/sapi/v1/capital/deposit/hisrec';
+  private readonly withdrawHistoryPath = '/sapi/v1/capital/withdraw/history';
+  private readonly transactionHistoryPath = '/sapi/v1/pay/transactions';
 
   constructor(
     private readonly configService: ConfigService,
@@ -41,6 +44,102 @@ export class AppService {
           .get<UserTradeHistoryResponse>(
             `${this.configService.get('BINANCE_URL')}${
               this.c2cPath
+            }?${query}&signature=${signature}`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'X-MBX-APIKEY': this.configService.get<string>('API_KEY'),
+              },
+            },
+          )
+          .pipe(
+            tap((response) => console.log(response)),
+            map((response) => response.data),
+          ),
+      );
+    } catch (error) {
+      this.logger.error(Object.keys(error));
+      this.logger.error(
+        'Response',
+        JSON.stringify(error.response.data, null, 2),
+      );
+    }
+  }
+
+  async getDepositHistory() {
+    const query = `timestamp=${Date.now()}`;
+    const signature = this.getSignature(query);
+
+    try {
+      return await firstValueFrom(
+        this.httpService
+          .get<UserTradeHistoryResponse>(
+            `${this.configService.get('BINANCE_URL')}${
+              this.deposityHistoryPath
+            }?${query}&signature=${signature}`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'X-MBX-APIKEY': this.configService.get<string>('API_KEY'),
+              },
+            },
+          )
+          .pipe(
+            tap((response) => console.log(response)),
+            map((response) => response.data),
+          ),
+      );
+    } catch (error) {
+      this.logger.error(Object.keys(error));
+      this.logger.error(
+        'Response',
+        JSON.stringify(error.response.data, null, 2),
+      );
+    }
+  }
+
+  async getWithdrawHistory() {
+    const query = `timestamp=${Date.now()}`;
+    const signature = this.getSignature(query);
+
+    try {
+      return await firstValueFrom(
+        this.httpService
+          .get<UserTradeHistoryResponse>(
+            `${this.configService.get('BINANCE_URL')}${
+              this.withdrawHistoryPath
+            }?${query}&signature=${signature}`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'X-MBX-APIKEY': this.configService.get<string>('API_KEY'),
+              },
+            },
+          )
+          .pipe(
+            tap((response) => console.log(response)),
+            map((response) => response.data),
+          ),
+      );
+    } catch (error) {
+      this.logger.error(Object.keys(error));
+      this.logger.error(
+        'Response',
+        JSON.stringify(error.response.data, null, 2),
+      );
+    }
+  }
+
+  async getTransactionHistory() {
+    const query = `timestamp=${Date.now()}`;
+    const signature = this.getSignature(query);
+
+    try {
+      return await firstValueFrom(
+        this.httpService
+          .get<UserTradeHistoryResponse>(
+            `${this.configService.get('BINANCE_URL')}${
+              this.transactionHistoryPath
             }?${query}&signature=${signature}`,
             {
               headers: {
